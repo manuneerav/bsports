@@ -59,8 +59,8 @@ class ManageUser(BaseUserManager):
         return User
 
 class User(AbstractBaseUser):
-    email           = models.CharField(max_length=99, verbose_name="email", unique=True)
-    username        = models.CharField(max_length=30, unique = True, null = False )
+    email           = models.CharField(max_length=99, verbose_name="email", primary_key = True, unique = True)
+    username        = models.CharField(max_length=30, unique = True)
     date_join       = models.DateTimeField(auto_now_add=True)
     last_login      = models.DateTimeField(auto_now_add=True)
     is_active       = models.BooleanField(default = False)
@@ -86,10 +86,11 @@ class User(AbstractBaseUser):
 
 class User_Profiles(models.Model):
     Sex_choice = [('ML','MALE',),('FL' ,'FEMALE'), ('TR','TRANSGENDER')]
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.PROTECT, primary_key = True)
     first_name  = models.CharField(max_length=20)
     last_name   = models.CharField(max_length=40)
     sex         = models.CharField(max_length=6, choices=Sex_choice)
+    mobile      = models.CharField(max_length=10, unique = True)
 
     def _init_(self):
         return self.user.username

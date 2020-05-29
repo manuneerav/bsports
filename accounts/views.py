@@ -8,6 +8,13 @@ from django.conf import settings
 from django.utils.http import is_safe_url
 from django.urls import reverse
 from django.contrib.auth import logout 
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes,force_text,DjangoUnicodeDecodeError
+from .utils import generate_token
+from django.core.mail import EmailMessage
+
 
 # Create your views here.
 
@@ -33,7 +40,9 @@ def login(request):
             return redirect('/')
         
     else:
-        return render(request,'blog.html')
+        return render(request,'index.html')
+
+
 
 def register(request):
     if request.method == 'POST':
@@ -49,6 +58,27 @@ def register(request):
             user = User.obb.create_user(username = pid, email = uMail, password = pswd1 )
             if user is not None:
                 user.save()
+
+                current_site=get_current_site(request)
+                email_subject='Activate your Account',
+                message=render_to_string('/activate.html',
+                {
+                    'user':user,
+                    'domain':current_site.domain,
+                    'uid':urlsafe_base64_encode(force_bytes( user.pk))
+                    'token':generate_token.make_token(user)
+                }
+                )
+                email_message = EmailMessage(
+                email_subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                ['to1@example.com', 'to2@example.com'],
+                )
+
+                email_message.send()
+ 
+
                 messages.info(request,'Now you can login')
                 return redirect('/')
             else:
@@ -57,7 +87,7 @@ def register(request):
         else:
             return redirect('register')
     else:
-        return render(request,'bregister.html')
+        return render(request,'reg.html')
 
 def validate_username(request):
     username = request.GET.get('username', None)
@@ -70,3 +100,19 @@ def out_view(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect("/")
+
+class ActivateAccountView(View):
+    def get(self,request,uidb64,token):
+        try:
+            uid=force_text(urlsafe_base64_decode(uidb64))
+            user=user.objects.get(pk=uid)
+        except Exception as identifier:
+            user=None
+
+        if user is not None and generate_token.check_token(user,token):
+            user.is_active=True
+            user.save()
+            messages.add_message(request,messages.INFO,'account activated successfully')
+            return redirect('login')
+
+        return render(request,'/activate_failed.html',status=401)

@@ -1,63 +1,39 @@
-{% extends 'log1.html' %}
+{% extends 'index.html'%}
 
 {% block content %}
-<form class="login100-form validate-form" action="register" method="POST">
+<form id="regForm" method = "post" action="accounts/register">
     {% csrf_token %}
-    <span class="login100-form-title p-b-43">
-        Backmarker Sports<br><small>Registeration Panel</small>
-    </span>				
-    <span class="txt2 msg" id='e' ></span>
-    <div class="wrap-input100 " >
-        <input class="input100" type="text" name="username" id="uname">
-        <span class="focus-input100"></span>
-        <span class="label-input100">Username</span>
+    <!-- One "tab" for each step in the form: -->
+    <div class="tab" id="tab">
+      <!-- <img src = "/static/zzzzzzz/img/backmarker_logo.png' %}" class = "image"> -->
+      <h1 class="fs-title">Enter Your Product Id</h1>
+      <input type="text" id = "productId" name="productId" oninput="this.className = ''" placeholder="Product Id" />
     </div>
-   
-    <div class="wrap-input100 " >
-        <input class="input100" type="text" name="fname">
-        <span class="focus-input100"></span>
-        <span class="label-input100">first Name</span>
+    <div class="tab" id="tab2">
+    <!-- <img src = "/static/assets/img/backmarker_logo.png'" class = "image"> -->
+    <h1 class="fs-title">Register Yourself</h1>
+      <input type="text" name="uname" oninput="this.className = ''" placeholder="User Name" />
+       <input type="text" name="email" id="email" oninput="this.className = ''" placeholder="Email"/>
+      <input type="password" name="pass" id="pass" oninput="this.className = ''" placeholder="Password" />
+     <input type="password" name="cpass" id="cpass" oninput="this.className = ''" placeholder="Confirm Password" />
     </div>
-    <div class="wrap-input100 " >
-        <input class="input100" type="text" name="lname">
-        <span class="focus-input100"></span>
-        <span class="label-input100">Last name</span>
+    <div class="tab">
+    <!-- <img src = "/static/assets/img/backmarker_logo.png" class = "image"> -->
+    <h1 class="fs-title">Personal Details</h1>
+      <input type="text" name="fname" oninput="this.className = ''" placeholder="First Name" />
+      <input type="text" name="lname" oninput="this.className = ''" placeholder="Last Name" />
+      <input type="number" name="phone" oninput="this.className = ''" placeholder="Phone" maxlength = "10"/>
+      <input type="text" name="dob" oninput="this.className = ''" placeholder="Date Of Birth" onfocus="(this.type='date')"/>
     </div>
-    <div class="wrap-input100 " >
-        <input class="input100" type="text" name="m">
-        <span class="focus-input100"></span>
-        <span class="label-input100">Mobile Number</span>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button type="button" id="prevBtn" class="action-button" onclick="nextPrev(-1)">Previous</button>
+        <button type="button" id="nextBtn" class="action-button" onclick="nextPrev(1)">Next</button>
+      </div>
     </div>
-    
-    <div class="wrap-input100 " >
-        <input class="input100" type="text" name="email">
-        <span class="focus-input100"></span>
-        <span class="label-input100">Email</span>
-    </div>
-    <div class="wrap-input100 validate-input" data-validate="Password is required">
-        <input class="input100" type="password" name="pass">
-        <span class="focus-input100"></span>
-        <span class="label-input100">Password</span>
-    </div>
-
-    <div class="wrap-input100 validate-input" data-validate="Password is required">
-        <input class="input100" type="password" name="pass1">
-        <span class="focus-input100"></span>
-        <span class="label-input100">Confirm Password</span>
-    </div>
-
-
-
-    <div class="container-login100-form-btn">
-        <button class="login100-form-btn">
-            Register
-        </button>
-    </div>
-
-    <div class="text-center p-t-46 p-b-20">
-        <span class="txt2">
-            <a href="/">already have an account </a> 
-        </span>
-    </div>
-</form>
+  </form>
+  
 {% endblock %}
+
+
+
